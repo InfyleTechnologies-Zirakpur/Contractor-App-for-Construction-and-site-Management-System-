@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../core/constants/app_colors.dart';
-import '../../data/services/auth_service.dart';
+import '../data/services/auth_service.dart';
 import 'reset_password_screen.dart';
 
 class VerifyResetOtpScreen extends StatefulWidget {

@@ -4,6 +4,10 @@ class ApiEndpoints {
   // ---- Auth ----
   static const String login = '/auth/login';
   static const String logout = '/auth/logout';
+  static const String forgotPassword = '/auth/logout';
+  static const String verifyResetOtp = '/auth/logout';
+  static const String resetPassword = '/auth/logout';
+  static const String changePassword = '/auth/logout';
 
   // ---- Home ----
   static const String homeProfile = '/home/profile';
@@ -25,4 +29,6 @@ class ApiEndpoints {
 
 static const String myLeaves = '/leave/mine';
 static const String raiseLeave = '/leave/raise';
+
+
 }

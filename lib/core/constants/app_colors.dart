@@ -25,6 +25,7 @@ class AppColors {
   // Attendance status colors — reused across cards, chips, calendars
   static const statusPresent = Color(0xFF2E7D32);
   static const statusAbsent = Color(0xFFD32F2F);
+  static const statusRejected = Color(0xFFD32F2F);
   static const statusLate = Color(0xFFF9A825);
   static const statusHalfDay = Color(0xFF1976D2);
   static const statusLeave = Color(0xFF7B1FA2);
