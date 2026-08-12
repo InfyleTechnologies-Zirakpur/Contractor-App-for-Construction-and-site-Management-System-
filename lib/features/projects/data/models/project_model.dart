@@ -19,6 +19,7 @@ class ProjectModel {
     required this.name,
     required this.status,
     required this.progressPercent,
+    this.description,
     this.location,
     this.startDate,
     this.endDate,
@@ -29,6 +30,7 @@ class ProjectModel {
   final String name;
   final ProjectStatus status;
   final double progressPercent;
+  final String? description;
   final String? location;
   final DateTime? startDate;
   final DateTime? endDate;
@@ -39,6 +41,7 @@ class ProjectModel {
         name: json['name'] as String,
         status: _statusFromString(json['status'] as String?),
         progressPercent: (json['progress_percent'] as num?)?.toDouble() ?? 0,
+        description: json['description'] as String?,
         location: json['location'] as String?,
         startDate:
             json['start_date'] != null ? DateTime.tryParse(json['start_date']) : null,

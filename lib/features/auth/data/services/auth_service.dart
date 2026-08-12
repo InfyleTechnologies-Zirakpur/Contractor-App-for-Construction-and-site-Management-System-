@@ -1,7 +1,10 @@
+import 'package:contractor_app/core/config/app_config.dart';
 import 'package:contractor_app/core/network/api_client.dart';
 import 'package:contractor_app/core/network/api_endpoints.dart';
 import 'package:contractor_app/core/network/api_request_builder.dart';
-import 'package:contractor_app/core/network/header_interceptor.dart';
+import 'package:contractor_app/core/roles/app_role.dart';
+import '../mock/auth_mock.dart';
+import 'auth_session_store.dart';
 import '../models/auth_model.dart';
 
 class AuthService {
@@ -12,6 +15,17 @@ class AuthService {
     required String email,
     required String password,
   }) async {
+    if (AppConfig.mockMode) {
+      final result = AuthMock.login(email: email, password: password);
+      await AuthSessionStore.instance.save(
+        token: result.token,
+        role: AppRole.fromStringOr(result.role, AppRole.contractor),
+        name: result.name,
+        email: result.email,
+      );
+      return result;
+    }
+
     final result = await ApiRequestBuilder<AuthResultModel>(
       method: baseUrl.post.method,
       path: ApiEndpoints.login,
@@ -19,22 +33,32 @@ class AuthService {
       fromJson: (json) => AuthResultModel.fromJson(json as Map<String, dynamic>),
     ).execute();
 
-    AuthTokenStore.instance.token = result.token;
+    await AuthSessionStore.instance.save(
+      token: result.token,
+      role: AppRole.fromStringOr(result.role, AppRole.contractor),
+      name: result.name,
+      email: result.email,
+    );
     return result;
   }
 
   Future<void> logout() async {
-    await ApiRequestBuilder<void>(
-      method: baseUrl.post.method,
-      path: ApiEndpoints.logout,
-      fromJson: (_) {},
-    ).execute();
-    AuthTokenStore.instance.token = null;
+    if (!AppConfig.mockMode) {
+      await ApiRequestBuilder<void>(
+        method: baseUrl.post.method,
+        path: ApiEndpoints.logout,
+        fromJson: (_) {},
+      ).execute();
+    }
+    await AuthSessionStore.instance.clear();
   }
 
   /// Step 1: user enters their email/phone. Backend sends either an OTP
   /// or an email link, and tells us which so the UI can branch.
   Future<ForgotPasswordResultModel> forgotPassword(String emailOrPhone) {
+    if (AppConfig.mockMode) {
+      return Future.value(AuthMock.forgotPassword(emailOrPhone));
+    }
     return ApiRequestBuilder<ForgotPasswordResultModel>(
       method: baseUrl.post.method,
       path: ApiEndpoints.forgotPassword,
@@ -50,6 +74,9 @@ class AuthService {
     required String emailOrPhone,
     required String otp,
   }) {
+    if (AppConfig.mockMode) {
+      return Future.value(AuthMock.verifyResetOtp(emailOrPhone, otp));
+    }
     return ApiRequestBuilder<ResetTokenModel>(
       method: baseUrl.post.method,
       path: ApiEndpoints.verifyResetOtp,
@@ -65,6 +92,7 @@ class AuthService {
     required String resetToken,
     required String newPassword,
   }) {
+    if (AppConfig.mockMode) return Future.value();
     return ApiRequestBuilder<void>(
       method: baseUrl.post.method,
       path: ApiEndpoints.resetPassword,
@@ -79,6 +107,7 @@ class AuthService {
     required String currentPassword,
     required String newPassword,
   }) {
+    if (AppConfig.mockMode) return Future.value();
     return ApiRequestBuilder<void>(
       method: baseUrl.post.method,
       path: ApiEndpoints.changePassword,

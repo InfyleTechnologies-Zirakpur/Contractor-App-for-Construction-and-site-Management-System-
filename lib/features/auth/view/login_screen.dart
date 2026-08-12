@@ -1,4 +1,5 @@
 import 'package:contractor_app/features/auth/data/services/auth_service.dart';
+import 'package:contractor_app/features/home/presentation/home_shell.dart';
 import 'package:flutter/material.dart';
 import '../../../../core/constants/app_colors.dart';
 // import '../../data/services/auth_service.dart';
@@ -35,8 +36,10 @@ class _LoginScreenState extends State<LoginScreen> {
     try {
       await AuthService.instance.login(email: email, password: password);
       if (!mounted) return;
-      // TODO(you): navigate to your home/dashboard screen
-      Navigator.of(context).pushReplacementNamed('/home');
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (_) => const HomeShell()),
+        (route) => false,
+      );
     } catch (_) {
       setState(() => _error = 'Incorrect email or password.');
     } finally {

@@ -4,18 +4,22 @@ class AuthResultModel {
     required this.userId,
     this.name,
     this.email,
+    this.role,
   });
 
   final String token;
   final String userId;
   final String? name;
   final String? email;
+  final String? role;
 
-  factory AuthResultModel.fromJson(Map<String, dynamic> json) => AuthResultModel(
+  factory AuthResultModel.fromJson(Map<String, dynamic> json) =>
+      AuthResultModel(
         token: json['token'] as String,
         userId: json['user_id'] as String,
         name: json['name'] as String?,
         email: json['email'] as String?,
+        role: json['role'] as String?,
       );
 }
 
